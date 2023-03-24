@@ -1,0 +1,35 @@
+---
+- name: Only two user has access to the apache html directory
+  hosts: servers
+  become: true
+  vars_files:
+    - vars/users_vars.yml
+  roles:
+    - httpd
+  tasks:
+    - name: Delete webadmin group (do not exist beforhand)
+      ansible.builtin.group:
+        name: webadmin
+        state: absent
+    
+    - name: New webadmin group
+      ansible.builtin.group:
+        name: webadmin
+        state: present
+
+    - name: Create  webadmin users
+      ansible.builtin.user:
+        name: "{{ item['username'] }}"
+        groups: "{{ item['groups'] }}"
+        state: present
+        password: "{{ item['password'] | password_hash('sha512') }}" 
+      loop: "{{ users }}"
+
+    - name: Change /var/www/html permissions
+      ansible.builtin.file:
+        path: /var/www
+        state: directory  
+        owner: root
+        group: webadmin
+        mode: 0660
+

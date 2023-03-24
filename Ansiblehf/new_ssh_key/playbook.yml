@@ -1,0 +1,28 @@
+---
+- name: New ssh key for {{ user }}
+  hosts: servers
+  vars_files:
+    vars/vars.yml
+  tasks:
+    
+    - name: Create new ssh key for {{ user }}
+      ansible.builtin.user:
+        user: "{{ user }}"
+        generate_ssh_key: true
+        force: yes
+        ssh_key_bits: 2048
+        ssh_key_file: /root/.ssh/lab_rsa
+      register: result
+      tags: skip  
+      when: user == 'root'
+
+    - name: Generating  new ssh key for {{ user }} 
+      when: user != 'root'
+      block:
+      - name: The new key is done
+        ansible.builtin.user:
+            user: "{{ user }}"
+            generate_ssh_key: true
+            force: true
+            ssh_key_bits: 2048
+            ssh_key_file: /home/{{ user }}/.ssh/lab_rsa 

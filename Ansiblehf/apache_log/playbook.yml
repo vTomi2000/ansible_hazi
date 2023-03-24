@@ -1,0 +1,38 @@
+---
+- name: Apache logrotate daily, max log number 7
+  hosts: servers
+  tasks: 
+    - name: Install Apache and firewalld
+      ansible.builtin.dnf:
+        name: 
+          - httpd
+          - firewalld
+        state: latest
+
+    - name: Enabled and start firewalld
+      ansible.builtin.service:
+        name: firewalld
+        enabled: true
+        state: started
+
+    - name: Httpd is started and enabled
+      ansible.posix.firewalld:
+        service: http
+        permanent: true
+        state: enabled
+        immediate: yes
+        
+    - name: Create a logrotate config file to Apache
+      ansible.builtin.copy:
+        src: crontab/apache_log.conf
+        dest: /etc/logrotate.d/httpd
+        owner: root
+        group: root
+
+    - name: The logrotate for Apache is done
+      ansible.builtin.cron:
+        name: Apache logrotate 
+        state: present
+        job: /etc/logrotate.d/httpd
+        minute: 54
+        hour: 17 

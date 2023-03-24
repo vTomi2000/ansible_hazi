@@ -1,0 +1,9 @@
+---
+users:
+  - username: user1
+    groups: webadmin
+    password: student
+  - username: user2
+    groups: webadmin
+    password: student
+    

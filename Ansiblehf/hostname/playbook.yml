@@ -1,0 +1,13 @@
+---
+- name: New host name 
+  hosts: servers
+  tasks: 
+    - name: Adding new name to servera.lab.example.com
+      ansible.builtin.hostname:
+        name: web.example.org
+      notify: restart host
+
+  handlers:
+    - name: restart host
+      ansible.builtin.reboot:
+        reboot_timeout: 60
