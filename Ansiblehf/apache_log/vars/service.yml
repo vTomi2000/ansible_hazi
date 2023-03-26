@@ -1,0 +1,5 @@
+---
+- web_pkg: httpd
+- web_srv: http
+- firewall_pkg: firewalld
+- firewall_srv: firewalld

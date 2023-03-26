@@ -1,0 +1,3 @@
+---
+- log_conf: crontab/apache_log.conf
+- host_file: /etc/logrotate.d/httpd
