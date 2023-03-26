@@ -4,17 +4,19 @@
   become: true
   vars_files:
     - vars/users_vars.yml
+    - vars/group_vars.yml
+    - vars/html_path.yml
   roles:
     - httpd
   tasks:
     - name: Delete webadmin group (do not exist beforhand)
       ansible.builtin.group:
-        name: webadmin
+        name: "{{ group_name }}"
         state: absent
     
     - name: New webadmin group
       ansible.builtin.group:
-        name: webadmin
+        name: "{{ group_name }}"
         state: present
 
     - name: Create  webadmin users
@@ -25,11 +27,11 @@
         password: "{{ item['password'] | password_hash('sha512') }}" 
       loop: "{{ users }}"
 
-    - name: Change /var/www/html permissions
+    - name: Change {{ html_path }} permissions
       ansible.builtin.file:
-        path: /var/www
+        path: "{{ html_path }}"
         state: directory  
         owner: root
-        group: webadmin
+        group: "{{ group_name }}"
         mode: 0660
 
