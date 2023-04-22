@@ -1,0 +1,33 @@
+---
+- name: New ssh key for
+  hosts: servers
+  vars_files:
+    - vars/vars.yml
+    - vars/user_vars.yml
+    - vars/group_vars.yml
+  tasks:
+    - name: Delete old keys  
+      ansible.builtin.file:
+        path: "{{ item['path'] }}"
+        state: absent 
+      loop:
+       "{{ key_type }}" 
+
+    - name: Create RSA key pair
+      command: ssh-keygen -t rsa -N "" -f /etc/ssh/ssh_host_rsa_key 
+
+    - name: Create ECDSA key pair
+      command: ssh-keygen -t ecdsa -N "" -f /etc/ssh/ssh_host_ecdsa_key
+
+    - name: Create ED25519 key pair
+      command: ssh-keygen -t ed25519 -N "" -f /etc/ssh/ssh_host_ed25519_key
+    
+    - name: File permission setting
+      ansible.builtin.file:
+        path: "{{ item['path'] }}"
+        state: file
+        owner: "{{ user_name }}"
+        group: "{{ group_name }}"
+        mode: 0640 
+      loop: 
+        "{{ key_type }}"    

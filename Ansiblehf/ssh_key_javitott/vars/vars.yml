@@ -1,0 +1,10 @@
+---
+key_type: 
+  - path: /etc/ssh/ssh_host_rsa_key
+  - path: /etc/ssh/ssh_host_ecdsa_key
+  - path: /etc/ssh/ssh_host_ed25519_key
+ssh_user:
+  - user: root
+    group: ssh_keys
+
+
